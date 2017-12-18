@@ -1,6 +1,6 @@
 # Pendeluhr
 
-A Particle project named Pendeluhr test6
+A Particle project named Pendeluhr 
 
 ## Welcome to your project!
 

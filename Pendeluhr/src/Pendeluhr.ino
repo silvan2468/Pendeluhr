@@ -11,7 +11,7 @@
 // System settings -------------------------------------
 
 SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
+// SYSTEM_MODE(SEMI_AUTOMATIC);
 
 //------------------------------------------------------
 // test
@@ -43,10 +43,10 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 // if(aaa == 1){WiFi.on(); Particle.connect(); aaa = 0;}
 // else{WiFi.off(); aaa = 1;}
 
-   if (Particle.connected()){connectingTimer = 0;}
-   if (connectingTimer >= 4 && Particle.connected() == FALSE){WiFi.off(); connectingTimer = 0;}               // wenn nach x+n Sekunden keine Verbindung aufgebaut werdenn konnte, Verbindungsversuch beenden
-   if (Particle.connected() == FALSE){connectingTimer++;}
-   if (Particle.connected() == FALSE && connectingTimer == 3) {Particle.connect(); connectingTimer++;}     // alle x Sekunden versuchen Verbindung aufzubauen
+  //  if (Particle.connected()){connectingTimer = 0;}
+  //  if (connectingTimer >= 4 && Particle.connected() == FALSE){WiFi.off(); connectingTimer = 0;}               // wenn nach x+n Sekunden keine Verbindung aufgebaut werdenn konnte, Verbindungsversuch beenden
+  //  if (Particle.connected() == FALSE){connectingTimer++;}
+  //  if (Particle.connected() == FALSE && connectingTimer == 3) {Particle.connect(); connectingTimer++;}     // alle x Sekunden versuchen Verbindung aufzubauen
 
  }
 
