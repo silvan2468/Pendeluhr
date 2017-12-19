@@ -1,5 +1,6 @@
 #include "DCF77.h"
 #include "Time.h"
+#include "ledmatrix-max7219-max7221.h"
 
 /*
  * Project Test_1
@@ -32,6 +33,8 @@ SYSTEM_THREAD(ENABLED);
 
  unsigned char aaa = 1;
 
+ LEDMatrix *led;
+
 
  // Timers ----------------------------------------------
 
@@ -53,23 +56,44 @@ SYSTEM_THREAD(ENABLED);
  Timer timer10s(10000, task10s);
 
 
- // -----------------------------------------------------
+ // ------------------------------------------------------------------------------
+
+
 
  void setup() {
 
+// Pins --------------------------------------------------------------------------
    pinMode(led1, OUTPUT);
-
-   pinMode(RX, INPUT_PULLUP);             // INPUT_PULLUP/PULLDOWN setzt den Microcontroller-eigenen PULLUP/DOWN-Widerstand --> kein externer Widerstand nötig
    attachInterrupt(RX, DCF77Interrupt, CHANGE);
 
-  //  oldTime = millis();
+   pinMode(RX, INPUT_PULLUP);      // INPUT_PULLUP/PULLDOWN setzt den Microcontroller-eigenen PULLUP/DOWN-Widerstand --> kein externer Widerstand nötig
 
+// Serial ------------------------------------------------------------------------
    Serial.begin(9600);
+
+// Time(er) ----------------------------------------------------------------------
    Time.zone(+1);
+   timer10s.start();    // start timer 10s
 
-   timer10s.start();
+// MAX7219 -----------------------------------------------------------------------
+   // setup pins and library
+   // 1 display per row, 1 display per column
+   // optional pin settings - default: CLK = A3, CS = A2, D_OUT = A5
+   // (pin settings is independent on HW SPI)
+   led = new LEDMatrix(1, 1, A3, A2, A5);
+   // > add every matrix in the order in which they have been connected <
+   // the first matrix in a row, the first matrix in a column
+   // vertical orientation (-90°) and no mirroring - last three args optional
+   led->addMatrix(0, 0, 270, false, false);
+   led->setIntensity(1, 0);                // Intensität 1-15 , Display 0
+   led->bitmap->setPixel(0, 0, true);
+   led->bitmap->setPixel(1, 1, true);
+   led->bitmap->setPixel(2, 2, true);
+   led->flush();
 
-   Particle.connect();
+// WiFi --------------------------------------------------------------------------
+   //  Particle.connect();
+//--------------------------------------------------------------------------------
  }
 
 

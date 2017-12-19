@@ -1,6 +1,6 @@
 /*
   Example
-  
+
   Scrolling text and simple vector drawing
 */
 
@@ -42,13 +42,13 @@ void drawHeart() {
 void setup() {
   // setup pins and library
   // 1 display per row, 1 display per column
-  // optional pin settings - default: CLK = A0, CS = A1, D_OUT = A2
+  // optional pin settings - default: CLK = A3, CS = A2, D_OUT = A5
   // (pin settings is independent on HW SPI)
-  led = new LEDMatrix(1, 1, A0, A1, A2);
+  led = new LEDMatrix(1, 1, A3, A2, A5);
   // > add every matrix in the order in which they have been connected <
   // the first matrix in a row, the first matrix in a column
   // vertical orientation (-90°) and no mirroring - last three args optional
-  led->addMatrix(0, 0, 270, false, false);
+  led->addMatrix(0, 0, 0, false, false);
 }
 
 void loop() {
