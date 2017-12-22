@@ -78,9 +78,9 @@ SYSTEM_THREAD(ENABLED);
 // MAX7219 -----------------------------------------------------------------------
    // setup pins and library
    // 1 display per row, 1 display per column
-   // optional pin settings - default: CLK = A3, CS = A2, D_OUT = A5
-   // (pin settings is independent on HW SPI)
-   led = new LEDMatrix(1, 1, A3, A2, A5);
+   // optional pin settings - default: CLK = D4, CS = D0, D_OUT = D2
+     // (pin settings is independent on HW SPI)
+   led = new LEDMatrix(1, 1, D4, D0, D2);
    // > add every matrix in the order in which they have been connected <
    // the first matrix in a row, the first matrix in a column
    // vertical orientation (-90°) and no mirroring - last three args optional
