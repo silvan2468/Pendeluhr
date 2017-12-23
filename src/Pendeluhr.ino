@@ -1,12 +1,15 @@
 #include "DCF77.h"
 #include "Time.h"
 #include "ledmatrix-max7219-max7221.h"
+#include "SparkFunLSM6DS3.h"
+#include "Wire.h"
+#include "SPI.h"
 
 /*
- * Project Test_1
+ * Project Pendeluhr
  * Description:
- * Author:
- * Date:
+ * Author: Silvan Huber
+ * Date: 23.12.2017
  */
 
 // System settings -------------------------------------
@@ -14,8 +17,10 @@
 SYSTEM_THREAD(ENABLED);
 // SYSTEM_MODE(SEMI_AUTOMATIC);
 
+LSM6DS3 myIMU(SPI_MODE, A2); // SPI
+// LSM6DS3 myIMU( I2C_MODE, 0x6B ); //Default constructor is I2C, addr 0x6B
+
 //------------------------------------------------------
-// test
 
 
  void DCF77Interrupt(void);
@@ -38,6 +43,29 @@ SYSTEM_THREAD(ENABLED);
 
  // Timers ----------------------------------------------
 
+ void task200ms(){
+   //Get all parameters
+    Serial.print("\nAccelerometer:\n");
+    Serial.print(" X = ");
+    Serial.println(myIMU.readFloatAccelX(), 4);
+    Serial.print(" Y = ");
+    Serial.println(myIMU.readFloatAccelY(), 4);
+    Serial.print(" Z = ");
+    Serial.println(myIMU.readFloatAccelZ(), 4);
+
+    Serial.print("\nGyroscope:\n");
+    Serial.print(" X = ");
+    Serial.println(myIMU.readFloatGyroX(), 4);
+    Serial.print(" Y = ");
+    Serial.println(myIMU.readFloatGyroY(), 4);
+    Serial.print(" Z = ");
+    Serial.println(myIMU.readFloatGyroZ(), 4);
+
+    Serial.print("\nThermometer:\n");
+    Serial.print(" Degrees C = ");
+    Serial.println(myIMU.readTempC(), 4);
+ }
+
  void task10s(){
    time();
 
@@ -53,6 +81,7 @@ SYSTEM_THREAD(ENABLED);
 
  }
 
+ Timer timer200ms(200, task200ms);
  Timer timer10s(10000, task10s);
 
 
@@ -73,14 +102,16 @@ SYSTEM_THREAD(ENABLED);
 
 // Time(er) ----------------------------------------------------------------------
    Time.zone(+1);
+   timer200ms.start();    // start timer 200ms
    timer10s.start();    // start timer 10s
 
 // MAX7219 -----------------------------------------------------------------------
    // setup pins and library
    // 1 display per row, 1 display per column
    // optional pin settings - default: CLK = D4, CS = D0, D_OUT = D2
-     // (pin settings is independent on HW SPI)
-   led = new LEDMatrix(1, 1, D4, D0, D2);
+   // (pin settings is independent on HW SPI)
+   led  = new LEDMatrix(1, 1, D4, D0, D2);
+
    // > add every matrix in the order in which they have been connected <
    // the first matrix in a row, the first matrix in a column
    // vertical orientation (-90°) and no mirroring - last three args optional
@@ -91,9 +122,15 @@ SYSTEM_THREAD(ENABLED);
    led->bitmap->setPixel(2, 2, true);
    led->flush();
 
+// LSM6DS33 ----------------------------------------------------------------------
+   //Call .begin() to configure the IMUs
+   if( myIMU.begin() != 0 ){Serial.println("Problem starting the sensor with CS @ Pin A2.");}
+   else{Serial.println("Sensor with CS @ Pin A2 started.");}
+
 // WiFi --------------------------------------------------------------------------
    //  Particle.connect();
 //--------------------------------------------------------------------------------
+
  }
 
 
